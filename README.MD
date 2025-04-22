@@ -10,6 +10,7 @@ sugarcane_analyzer/
 ├── output/               # Donde se guardarán resultados, recortes, debug, 
 etc.
 ├── debugs/
+├── xdxd/
 ├── preprocessing.py      # Recorte automático a la hoja
 ├── measurement.py        # Medición de largo y nudos
 ├── utils.py              # Funciones auxiliares

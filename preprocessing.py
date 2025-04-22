@@ -16,6 +16,27 @@ def crop_to_paper(image):
     x, y, w, h = cv2.boundingRect(contour)
     return image[y:y+h, x:x+w]
 
+def crop_to_paper_with_cane_highlight(image):
+    """
+    Devuelve:
+    - La imagen recortada a la hoja
+    - Una copia resaltada con la caña contorneada
+    """
+    contour = find_paper_contour(image)
+    x, y, w, h = cv2.boundingRect(contour)
+    cropped = image[y:y+h, x:x+w]
+
+    # Detectar la caña con umbral
+    gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
+    _, thresh = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY_INV)
+    contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    # Crear imagen debug con contornos verdes
+    highlighted_debug = cropped.copy()
+    cv2.drawContours(highlighted_debug, contours, -1, (0, 255, 0), 2)
+
+    return cropped, highlighted_debug
+
 def hay_cana(cropped_img, area_minima=1000, aspect_ratio_min=2.5, altura_relativa_min=0.3):
     """
     Verifica si hay al menos un objeto grande con forma alargada (caña) en la imagen recortada.

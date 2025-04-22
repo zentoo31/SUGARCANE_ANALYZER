@@ -3,6 +3,7 @@ import os
 from preprocessing import crop_to_paper
 from measurement import get_pixel_per_cm, count_knots
 from preprocessing import hay_cana
+from preprocessing import crop_to_paper_with_cane_highlight
 
 PAPER_WIDTH_CM = 164.0
 
@@ -10,7 +11,7 @@ def analizar_cana(image_path: str):
     image = cv2.imread(image_path)
     filename = os.path.basename(image_path)
 
-    cropped = crop_to_paper(image)
+    cropped, debug_cane = crop_to_paper_with_cane_highlight(image)
     if not hay_cana(cropped):
         raise ValueError("No se detectó una caña en la imagen.")
     pixel_per_cm = get_pixel_per_cm(cropped, PAPER_WIDTH_CM)
@@ -27,7 +28,7 @@ def analizar_cana(image_path: str):
         cv2.line(debug_knots, (0, y), (debug_knots.shape[1], y), (0, 0, 255), 2)
 
     output_path = os.path.join("output", f"nudos_{filename}")
-    cv2.imwrite(output_path, debug_knots)
+    cv2.imwrite(output_path, debug_cane)
 
     return {
         "filename": filename,

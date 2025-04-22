@@ -3,13 +3,19 @@ from fastapi.responses import FileResponse, JSONResponse
 import shutil
 import os
 import uuid
-
+from fastapi.middleware.cors import CORSMiddleware
 from analyzer import analizar_cana
 
 app = FastAPI()
 UPLOAD_DIR = "xdxd"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/analizar")
 async def analizar(file: UploadFile = File(...)):

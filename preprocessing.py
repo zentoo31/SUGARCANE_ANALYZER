@@ -2,7 +2,8 @@ import cv2
 import numpy as np
 
 def find_paper_contour(image):
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    contrast = cv2.convertScaleAbs(image, alpha=1, beta=2)
+    gray = cv2.cvtColor(contrast, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (7, 7), 0)
     edged = cv2.Canny(blur, 50, 150)
     
@@ -17,15 +18,9 @@ def crop_to_paper(image):
     return image[y:y+h, x:x+w]
 
 def crop_to_paper_with_cane_highlight(image):
-    """
-    Devuelve:
-    - La imagen recortada a la hoja
-    - Una copia resaltada con la caña contorneada
-    """
     contour = find_paper_contour(image)
     x, y, w, h = cv2.boundingRect(contour)
     cropped = image[y:y+h, x:x+w]
-
     # Detectar la caña con umbral
     gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
     _, thresh = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY_INV)

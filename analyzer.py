@@ -2,6 +2,7 @@ import cv2
 import os
 from preprocessing import crop_to_paper
 from measurement import get_pixel_per_cm, count_knots
+from preprocessing import hay_cana
 
 PAPER_WIDTH_CM = 164.0
 
@@ -10,6 +11,8 @@ def analizar_cana(image_path: str):
     filename = os.path.basename(image_path)
 
     cropped = crop_to_paper(image)
+    if not hay_cana(cropped):
+        raise ValueError("No se detectó una caña en la imagen.")
     pixel_per_cm = get_pixel_per_cm(cropped, PAPER_WIDTH_CM)
     length_cm = cropped.shape[0] / pixel_per_cm
 
